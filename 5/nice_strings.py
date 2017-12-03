@@ -1,13 +1,25 @@
 #!/usr/bin/env python3
 # encoding: utf-8
 
+from collections import Counter
 import sys
+
 
 from ben import input_iter
 
-def has_repeated_letter(s):
-	for i in range(len(s) - 1):
-		if s[i] == s[i+1]:
+def has_repeated_letter(s, offset=1):
+	for i in range(len(s) - offset):
+		if s[i] == s[i+offset]:
+			return True
+	return False
+
+
+def has_repeated_substring(s, length=2):
+	pairs = Counter()
+	for i in range(0, len(s)):
+		pair = s[i:i+length]
+		pairs.update([pair])
+		if pairs[pair] > 1:
 			return True
 	return False
 
@@ -20,21 +32,33 @@ def is_nice_one(string):
 	)
 
 
+def is_nice_two(string):
+	return (
+		has_repeated_letter(string, 2)
+		and has_repeated_substring(string)
+	)
+
+
 def answer(predicate):
 	return sum(predicate(s) for s in input_iter())
 
 
+def err(*args):
+	print(*args, file=sys.stderr)
+	sys.exit(1)
+
+
 def main():
 	if len(sys.argv) == 1:
-		print('Usage:', sys.argv[0], '<1|2> < input', file=sys.stderr)
-		sys.exit(1)
-	mode = sys.argv[1]
-	if mode == '1':
-		func = is_nice_one
-	elif mode == '2':
-		func = is_nice_two
+		err('Usage:', sys.argv[0], '<1|2> < input')
 
-	print(answer(func))
+	mode = sys.argv[1]
+	if mode not in '12':
+		err('Invalid mode. 1 or 2 only.')
+
+	predicate = is_nice_one if mode == '1' else is_nice_two
+
+	print(answer(predicate))
 
 
 if __name__ == '__main__':
