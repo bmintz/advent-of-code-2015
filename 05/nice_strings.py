@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # encoding: utf-8
 
-from collections import Counter
 import sys
 
-
 from ben import input_iter
+
 
 def has_repeated_letter(s, offset=1):
 	for i in range(len(s) - offset):
@@ -14,12 +13,10 @@ def has_repeated_letter(s, offset=1):
 	return False
 
 
-def has_repeated_substring(s, length=2):
-	pairs = Counter()
-	for i in range(0, len(s)):
-		pair = s[i:i+length]
-		pairs.update([pair])
-		if pairs[pair] > 1:
+def has_repeated_pair(s):
+	for i in range(len(s) - 3):
+		pair = s[i:i+2]
+		if pair in s[i+2:]:
 			return True
 	return False
 
@@ -35,7 +32,7 @@ def is_nice_one(string):
 def is_nice_two(string):
 	return (
 		has_repeated_letter(string, 2)
-		and has_repeated_substring(string)
+		and has_repeated_pair(string)
 	)
 
 
